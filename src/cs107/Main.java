@@ -17,7 +17,7 @@ public class Main {
     //---------------------------
     // Tests functions separately
     //---------------------------
-	System.out.println("Uncomment the function calls in Main.main to test your implementation.");
+	System.out.println("Uncomment the function calls in Main.main to test your implementation Test mod.");
 	System.out.println("The provided tests are not complete. You have to write your own tests.");
     //testGetNeighbours();
     //testConnectedPixels1();
