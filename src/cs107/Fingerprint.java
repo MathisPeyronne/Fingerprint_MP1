@@ -167,11 +167,11 @@ public class Fingerprint {
           still_modifying = false;
           for(int i = 0; i< image.length; i++) {
               for(int j = 0; j < image[0].length; j++) {
-                //testing if the cell at i,j is connected to the minutie
-                //Condition: le pixel à ces coordonnées est noir
+                //testing if the cell at i,j is connected to the minutia
+                //Condition: the pixel at this position is black
                 is_black = image[i][j]; //same as image[i][j] == true
 
-                //Condition: le pixel est connecté à notre minutie, donc connecté a une case déja noir
+                //Condition: the pixel is connected to our minutia therefore connected to a black pixel
                 //All the try/catch are to not have any problems with pixels that are on the edge.
                 // Didn't find a simpler way to handle it.All others wher more complex.
                 top_left = top = top_right = right = bottom_right = bottom = bottom_left = left = false;
@@ -272,7 +272,7 @@ public class Fingerprint {
           }
       }
 
-      //takes care of the case where the sloap is infinite(the line is vertical)
+      //takes care of the case where the slope is infinite(the line is vertical)
       if(sum_x_squared == 0){
           return Double.POSITIVE_INFINITY;
       }
