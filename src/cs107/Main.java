@@ -19,11 +19,29 @@ public class Main {
     //---------------------------
 	System.out.println("Uncomment the function calls in Main.main to test your implementation Test mod.");
 	System.out.println("The provided tests are not complete. You have to write your own tests.");
+
+    //***** Mathis's extra tests ******
+    //testComputeSlope();
+    //testComputeAngle();
+    //testComputeAngle2(); // this is also a good test for computeSlope() cf. output
+    //testComputeAngle3Infinity(); // test the case where the slope is positive infinity.
+    //testOrientation2BigAngle();
+    //testOrientation3Vertical();
+    //testOrientation4NegativeSlope();
+    //testPart2TroughExtract(); // this one is the last one to finish
+    //*********************************
+
+    //****** Tests about Part1 ******
     //testGetNeighbours();
+    //*******************************
+
+    //****** Tests about Part2 ******
     //testConnectedPixels1();
     //testConnectedPixels2();
     //testConnectedPixels3();
     //testOrientation();
+    //*******************************
+
     //testApplyRotation();
     //testApplyTranslation();
     //testThin();
@@ -55,7 +73,7 @@ public class Main {
     //compare 1_1 with all images of finger 3 to 16
     //for (int f = 3; f <= 16; f++) {
     //    testCompareAllFingerprints("1_1", f, false);
-    //}	
+    //}
   }
 
   /**
@@ -172,6 +190,74 @@ public class Main {
     }
   }
 
+  /**                       **by us**
+   * This function is by us. It tests the functionalities of
+   * computeSlope.
+   */
+  public static void testComputeSlope() {
+    boolean[][] image = {{false, false, false, true},
+            {false, false, true, true},
+            {false, true, true, false},
+            {false, false, false, false}};
+    double slope = Fingerprint.computeSlope(image, 2, 1);
+    double expected_slope = 7.0/10.0;
+    System.out.println("Expected slope: " + expected_slope + "\t Computed slope: " + slope);
+  }
+
+  /**                       **by us**
+   * This function is by us. It tests the functionalities of
+   * computeAngle.
+   */
+  public static void testComputeAngle() {
+    // This is dependent on the well functioning of Compute Slope
+    boolean[][] image = {{false, false, false, true},
+            {false, false, true, true},
+            {false, true, true, false},
+            {false, false, false, false}};
+    double slope = Fingerprint.computeSlope(image, 2, 1);
+    double angle = Fingerprint.computeAngle(image, 2, 1, slope);
+    double expected_slope = 7.0/10 ;
+    double expected_angle = Math.atan(expected_slope);
+    System.out.println("Expected slope: " + expected_slope + "\t Computed slope: " + slope);
+    System.out.println("Expected angle: " + expected_angle + "\t Computed angle: " + angle);
+  }
+
+  /**                       **by us**
+   * This function is by us. It tests the functionalities of
+   * computeAngle.
+   */
+  public static void testComputeAngle2() {
+    // This is dependent on the well functioning of Compute Slope
+    boolean[][] image = {{false, false, false, true},
+            {false, false, true, true},
+            {false, true, true, false},
+            {false, false, false, false}};
+    double slope = Fingerprint.computeSlope(image, 0, 3);
+    double angle = Fingerprint.computeAngle(image, 0, 3, slope);
+    double expected_slope = 10.0/7.0 ;
+    double expected_angle = Math.atan(expected_slope) + Math.PI;
+    System.out.println("Expected slope: " + expected_slope + "\t Computed slope: " + slope);
+    System.out.println("Expected angle: " + expected_angle + "\t Computed angle: " + angle);
+  }
+
+  /**                       **by us**
+   * This function is by us. It tests the functionalities of
+   * computeAngle.
+   */
+  public static void testComputeAngle3Infinity() {
+    // This is dependent on the well functioning of Compute Slope
+    boolean[][] image = {{false, true, false, false},
+            {false, true, false, false},
+            {false, true, false, false},
+            {false, true, false, false}};
+    double slope = Fingerprint.computeSlope(image, 1, 1);
+    double angle = Fingerprint.computeAngle(image, 1, 1, slope);
+    double expected_slope = Double.POSITIVE_INFINITY ;
+    double expected_angle = Math.PI/2 + Math.PI;
+    System.out.println("Expected slope: " + expected_slope + "\t Computed slope: " + slope);
+    System.out.println("Expected angle: " + expected_angle + "\t Computed angle: " + angle);
+  }
+
   /**
    * This function is here to help you test the functionalities of
    * computeOrientation. You are free to modify and/or delete it.
@@ -184,6 +270,63 @@ public class Main {
     int angle = Fingerprint.computeOrientation(image, 2, 1, 3);
     System.out.println("Expected angle: 35\t Computed angle: " + angle);
   }
+
+  /**                      ** by us **
+   * This function is here to help test the functionalities of
+   * computeOrientation.
+   */
+  public static void testOrientation2BigAngle() {
+    boolean[][] image = {{true, false, false, true},
+            {false, false, true, true},
+            {false, true, true, false},
+            {false, false, false, false}};
+    int angle = Fingerprint.computeOrientation(image, 0, 3, 3);
+    System.out.println("Expected angle: 235\t Computed angle: " + angle);
+  }
+
+  /**                      ** by us **
+   * This function is here to help test the functionalities of
+   * computeOrientation.
+   */
+  public static void testOrientation3Vertical() {
+    boolean[][] image = {{false, true, false, false},
+            {false, true, false, false},
+            {false, true, false, false},
+            {false, true, false, false}};
+    int angle = Fingerprint.computeOrientation(image, 1, 1, 3);
+    System.out.println("Expected angle: " + 270 + "\t Computed angle: " + angle);
+  }
+
+  /**                      ** by us **
+   * This function is here to help test the functionalities of
+   * computeOrientation.
+   */
+  public static void testOrientation4NegativeSlope() {
+    boolean[][] image = {{true, false, false, false},
+            {true, true, false, false},
+            {false, true, true, false},
+            {false, false, false, false}};
+    int angle = Fingerprint.computeOrientation(image, 0, 0, 3);
+    System.out.println("Expected angle: " + (Math.round(Math.toDegrees(Math.atan(-10.0/7.0)))+360) + "\t Computed angle: " + angle);
+  }
+
+  /**                       **by us**
+   * This function is by us. It tests the functionalities of
+   * the overall Part2. But it relies also on the functioning of getNeighbours() and transitions()
+   */
+  public static void testPart2TroughExtract() {
+    //TODO finish this test once Extract() is finished
+    boolean[][] image = {{true, false, false, false},
+            {true, true, false, false},
+            {false, true, true, false},
+            {false, false, false, false}};
+    boolean[][] image2 = Helper.readBinary("resources/test_inputs/skeletonTest.png");
+    System.out.println(Fingerprint.extract(image));
+    System.out.println(Fingerprint.extract(image2));
+  }
+
+
+
 
   /**
    * This function is here to help you test the functionalities of
