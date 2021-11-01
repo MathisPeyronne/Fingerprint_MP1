@@ -1,7 +1,7 @@
 package cs107;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import jdk.swing.interop.DropTargetContextWrapper;
+
 import java.util.List;
 
 /**
@@ -64,13 +64,34 @@ public class Fingerprint {
    *              <code>0</code>(included) and
    *              <code>image[row].length</code>(excluded).
    * @return An array containing each neighbours' value.
+   *
    */
-  public static boolean[] getNeighbours(boolean[][] image, int row, int col) {
+
+    public static boolean[] getNeighbours(boolean[][] image, int row, int col) {
 	  assert (image != null); // special case that is not expected (the image is supposed to have been checked
                               // earlier)
-	  //TODO implement
-	  return null;
-  }
+
+      // get dimensions of the rectangular array image
+      int imageHeight = image.length;
+      boolean [] rowOne = image[0];
+      int imageWidth = rowOne.length;
+
+      // neighbours [] is the array to be returned by getNeighbours()
+      boolean neighbours [] = new boolean[8];
+
+      // filling the array by checking for special cases beforehand
+      neighbours[0] = (row==0)? false : image[row-1][col];
+      neighbours[1] = (row==0 || col==imageWidth-1)? false : image[row-1][col+1];
+      neighbours[2] = (col==imageWidth-1)? false : image[row][col+1];
+      neighbours[3] = (row==imageHeight-1 || col==imageWidth-1)?false : image[row+1][col+1];
+      neighbours[4] = (row==imageHeight-1)? false : image[row+1][col];
+      neighbours[5] = (row==imageHeight-1 || col==0)? false : image[row+1][col-1];
+      neighbours[6] = (col==0)? false : image[row][col-1];
+      neighbours[7] = (row==0 || col==0)?false : image[row-1][col-1];
+
+      return neighbours;
+    }
+
 
   /**
    * Computes the number of black (<code>true</code>) pixels among the neighbours
@@ -82,10 +103,21 @@ public class Fingerprint {
    * @return the number of black neighbours.
    */
   public static int blackNeighbours(boolean[] neighbours) {
-	  //TODO implement
-	  return 0;
+
+
+/*
+    //number of black elemnets in array neighbours:
+
+    int blackNeighbours = 0;
+    for (int i=0, i<neighbours.length-1, i++) {
+      if (neighbours[i] == true) {
+        blackNeighbours++;
+      }
+    }*/
+
+    return 0;
   }
-  
+  // length
   /**
    * Computes the number of white to black transitions among the neighbours of
    * pixel.
