@@ -77,10 +77,10 @@ public class Fingerprint {
       boolean [] rowOne = image[0];
       int imageWidth = rowOne.length;
 
-      // neighbours [] is the array to be returned by getNeighbours()
-      boolean neighbours [] = new boolean[8];
+      // neighbours[] is the array to be returned by getNeighbours()
+      boolean neighbours [] = new boolean[8]; 
 
-      // filling the array by checking for special cases beforehand
+      // filling the array and checking for special cases beforehand
       neighbours[0] = (row==0)? false : image[row-1][col];
       neighbours[1] = (row==0 || col==imageWidth-1)? false : image[row-1][col+1];
       neighbours[2] = (col==imageWidth-1)? false : image[row][col+1];
@@ -105,20 +105,15 @@ public class Fingerprint {
    */
   public static int blackNeighbours(boolean[] neighbours) {
 
-
-/*
-    //number of black elemnets in array neighbours:
-
     int blackNeighbours = 0;
-    for (int i=0, i<neighbours.length-1, i++) {
+    for (int i=0; i<neighbours.length; i++) {
       if (neighbours[i] == true) {
         blackNeighbours++;
       }
-    }*/
-
-    return 0;
+    }
+    return blackNeighbours;
   }
-  // length
+
   /**
    * Computes the number of white to black transitions among the neighbours of
    * pixel.
@@ -129,8 +124,17 @@ public class Fingerprint {
    * @return the number of white to black transitions.
    */
   public static int transitions(boolean[] neighbours) {
-	  //TODO implement
-	  return 0;
+
+      int transitions = 0;
+      for (int a=0; a<=6; a++) {                                                          // only check until P_6
+          if (neighbours[a] == false &&  (neighbours[a + 1] == true)) {
+              transitions++;
+          }
+      }
+      if (neighbours[neighbours.length-1] == false && neighbours[0] == true)  {           // check special last case P_7
+          transitions++;
+      }
+	  return transitions;
   }
 
   /**
@@ -141,9 +145,19 @@ public class Fingerprint {
    * @return <code>True</code> if they are identical, <code>false</code>
    *         otherwise.
    */
+
+
   public static boolean identical(boolean[][] image1, boolean[][] image2) {
-	  //TODO implement
-	  return false;
+      // iterates through the 2D array of image1 comparing every element of image1to its corresponding element in image2
+      // assume they have the same dimensions because elements can only flip their truth value
+	  for (int i=0; i<image1.length; i++) {
+          for (int j=0; j<image1[i].length; j++) {
+              boolean b1 = image1[i][j];
+              boolean b2 = image2[i][j];
+              if (b1!=b2) return false;
+          }
+      }
+	  return true;
   }
 
   /**
@@ -265,7 +279,7 @@ public class Fingerprint {
           }
       }
 	  return connectedPixels;
-}
+  }
 
   /**
    * Computes the slope of a minutia using linear regression.
