@@ -31,8 +31,11 @@ public class Main {
     //testPart2TroughExtract(); // this one is the last one to finish
     //*********************************
 
-    //****** Tests about Part1 ******
-    //testGetNeighbours();
+    //****** Tests for Part1 ******
+    testGetNeighbours();
+    testBlackNeighbours();
+    testTransitions();
+    testIdentical();
     //*******************************
 
     //****** Tests about Part2 ******
@@ -87,7 +90,7 @@ public class Main {
     boolean[] expected = {false, false, false, false,
                           false, false, false, false};
     if (arrayEqual(neighbours, expected)) {
-      System.out.println("OK");
+      System.out.print("OK");
     } else {
       System.out.println("ERROR");
       System.out.print("Expected: ");
@@ -107,10 +110,63 @@ public class Main {
       System.out.println("ERROR");
       System.out.print("Expected: ");
       printArray(expected2);
-      System.out.print("Computed: ");
+      System.out.print("Computed:t ");
       printArray(neighbours2);
     }
   }
+
+  public static void testBlackNeighbours () {
+    System.out.print("Testing blackNeighbours: ");
+    boolean [] neighbours = {true, false, false, false, true, true, true, false};
+    int blackNeighbours = Fingerprint.blackNeighbours(neighbours);
+    int expected = 4;
+    if (blackNeighbours==expected) {
+      System.out.println("OK");
+    }
+    else {System.out.println("ERROR"); }
+  }
+
+  public static void testTransitions() {
+    System.out.print("Testing transition: ");
+    boolean [] neighbours = {true, false, false, false, true, true, true, false};
+    int transition = Fingerprint.transitions(neighbours);
+    int expected = 2;
+    if (transition==expected) {
+      System.out.println("OK");
+    }   else {
+    System.out.println("ERROR"); }
+  }
+
+
+  public static void testIdentical () {
+    System.out.print("Testing identical 1: ");
+    boolean[][] image1 = {{true}};     //testing two different arrays
+    boolean[][] image2 = {{false}};
+    boolean identical = Fingerprint.identical(image1, image2);
+    boolean expected = false;
+    if (identical==expected) {
+      System.out.println("OK");
+    }
+    else System.out.println("ERROR");
+
+    System.out.print("Testing identical 2: ");
+    boolean[][] imageA = {{true, true, false, true, true, false},    // testing two identical arrays
+                          {true, true, true, true, true, false},
+                          {true, true, false, true, true, false},
+                          {true, true, true, true, true, false}};
+    boolean[][] imageB = {{true, true, false, true, true, false},
+                          {true, true, true, true, true, false},
+                          {true, true, false, true, true, false},
+                          {true, true, true, true, true, false}};
+    boolean identical1 = Fingerprint.identical(imageA, imageB);
+    boolean expected1 = true;
+    if (identical1==expected1) {
+      System.out.println("OK");
+    }
+    else System.out.println("ERROR");
+
+  }
+
 
   /**
    * This function is here to help you test the functionalities of
