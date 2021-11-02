@@ -94,15 +94,15 @@ public class Fingerprint {
     }
 
 
-  /**
-   * Computes the number of black (<code>true</code>) pixels among the neighbours
-   * of a pixel.
-   *
-   * @param neighbours array containing each pixel value. The array must respect
-   *                   the convention described in
-   *                   {@link #getNeighbours(boolean[][], int, int)}.
-   * @return the number of black neighbours.
-   */
+        /**
+         * Computes the number of black (<code>true</code>) pixels among the neighbours
+         * of a pixel.
+         *
+         * @param neighbours array containing each pixel value. The array must respect
+         *                   the convention described in
+         *                   {@link #getNeighbours(boolean[][], int, int)}.
+         * @return the number of black neighbours.
+         */
   public static int blackNeighbours(boolean[] neighbours) {
 
 

@@ -21,13 +21,13 @@ public class Main {
 	System.out.println("The provided tests are not complete. You have to write your own tests.");
 
     //***** Mathis's extra tests ******
-    testComputeSlope();
-    testComputeAngle();
-    testComputeAngle2(); // this is also a good test for computeSlope() cf. output
+    //testComputeSlope();
+    //testComputeAngle();
+    //testComputeAngle2(); // this is also a good test for computeSlope() cf. output
     //testComputeAngle3Infinity(); // test the case where the slope is positive infinity.
     //testOrientation2BigAngle();
     //testOrientation3Vertical();
-    testOrientation4NegativeSlope();
+    //testOrientation4NegativeSlope();
     //testPart2TroughExtract(); // this one is the last one to finish
     //*********************************
 
