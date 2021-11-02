@@ -32,10 +32,10 @@ public class Main {
     //*********************************
 
     //****** Tests for Part1 ******
-    testGetNeighbours();
-    testBlackNeighbours();
-    testTransitions();
-    testIdentical();
+    //testGetNeighbours();
+    //testBlackNeighbours();
+    //testTransitions();
+    //testIdentical();
     //*******************************
 
     //****** Tests about Part2 ******
