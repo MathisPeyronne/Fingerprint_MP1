@@ -47,12 +47,12 @@ public class Main {
 
     //testApplyRotation();
     //testApplyTranslation();
-    //testThin();
+    testThin();
     //testWithSkeleton();
     
-    //testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
-    //testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
-    //testDrawSkeleton("2_1"); //draw skeleton of fingerprint 2_1.png
+    testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
+    testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
+    testDrawSkeleton("2_1"); //draw skeleton of fingerprint 2_1.png
 
     //testDrawMinutiae("1_1"); //draw minutiae of fingerprint 1_1.png
     //testDrawMinutiae("1_2"); //draw minutiae of fingerprint 1_2.png
@@ -90,7 +90,7 @@ public class Main {
     boolean[] expected = {false, false, false, false,
                           false, false, false, false};
     if (arrayEqual(neighbours, expected)) {
-      System.out.print("OK");
+      System.out.println("OK");
     } else {
       System.out.println("ERROR");
       System.out.print("Expected: ");
@@ -116,10 +116,10 @@ public class Main {
   }
 
   public static void testBlackNeighbours () {
-    System.out.print("Testing blackNeighbours: ");
-    boolean [] neighbours = {true, false, false, false, true, true, true, false};
+    System.out.print("testBlackNeighbours: ");
+    boolean [] neighbours = {true, false, false, false, true, true, true, true};
     int blackNeighbours = Fingerprint.blackNeighbours(neighbours);
-    int expected = 4;
+    int expected = 5;
     if (blackNeighbours==expected) {
       System.out.println("OK");
     }
@@ -127,7 +127,7 @@ public class Main {
   }
 
   public static void testTransitions() {
-    System.out.print("Testing transition: ");
+    System.out.print("testTransition: ");
     boolean [] neighbours = {true, false, false, false, true, true, true, false};
     int transition = Fingerprint.transitions(neighbours);
     int expected = 2;
@@ -139,7 +139,7 @@ public class Main {
 
 
   public static void testIdentical () {
-    System.out.print("Testing identical 1: ");
+    System.out.print("testIdentical 1: ");
     boolean[][] image1 = {{true}};     //testing two different arrays
     boolean[][] image2 = {{false}};
     boolean identical = Fingerprint.identical(image1, image2);
@@ -460,12 +460,14 @@ public class Main {
   public static void testThin() {
 	    boolean[][] image1 = Helper.readBinary("resources/test_inputs/1_1_small.png");
 	    boolean[][] skeleton1 = Fingerprint.thin(image1);
+        printArray(skeleton1);
 	    Helper.writeBinary("skeleton_1_1_small.png", skeleton1);
   }
 
   public static void testDrawSkeleton(String name) {
 	    boolean[][] image1 = Helper.readBinary("resources/fingerprints/" + name + ".png");
 	    boolean[][] skeleton1 = Fingerprint.thin(image1);
+
 	    Helper.writeBinary("skeleton_" + name + ".png", skeleton1);
   }
 
