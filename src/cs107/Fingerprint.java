@@ -436,6 +436,7 @@ public class Fingerprint {
                   minutiae.add(new int[] {i, j, orientation});  // [row, col, orientation(degrees)]
               }
           }
+
       }
 
 	  return minutiae;
