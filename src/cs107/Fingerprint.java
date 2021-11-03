@@ -421,7 +421,6 @@ public class Fingerprint {
    * @see #thin(boolean[][])
    */
   public static List<int[]> extract(boolean[][] image) {
-	  //TODO test it once transition() and getNeighbours() is done.
       //** useful variables **
       int orientation;
       List<int[]> minutiae = new ArrayList<int[]>(); // the int[] characterising the minutia is [row, col, orientation(degrees)]

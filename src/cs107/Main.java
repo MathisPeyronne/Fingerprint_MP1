@@ -1,7 +1,6 @@
 package cs107;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,7 +28,7 @@ public class Main {
     //testOrientation2BigAngle();
     //testOrientation3Vertical();
     //testOrientation4NegativeSlope();
-    testPart2ThroughExtract(); // this one is the last one to finish
+    //testPart2ThroughExtract(); // this one is the last one to finish
     //*********************************
 
     //****** Tests for Part1 ******
@@ -372,7 +371,6 @@ public class Main {
    * the overall Part2. But it relies also on the functioning of getNeighbours() and transitions()
    */
   public static void testPart2ThroughExtract() {
-    //TODO finish this test once Extract() is finished
     boolean[][] image2 = {{true, false, false, false},
             {true, true, false, false},
             {false, true, true, false},
@@ -395,30 +393,8 @@ public class Main {
       System.out.println("OK");
     }
 
-
-
-
-    //Helper.show(image2_int, "a test");
-
-    boolean[][] image2_correct = Helper.readBinary( "resources/test_outputs/minutiae_skeletonTest.png");
-
-    /*
-    for(int i = 0; i < image2.length; ++i){
-      System.out.println();
-      System.out.print(i + " : ");
-
-      for(int j = 0; j < image2[i].length; ++j){
-        System.out.print("[" + i + "][" + j + "] " + image2[i][j] + " : ");
-      }
-    }
-
-    for(int i=0; i < minutiae.size(); ++i){
-      System.out.println();
-      for(int el: minutiae.get(i)){
-        System.out.println(el);
-      }
-    }
-     */
+    //Display our computed minutiae
+    //Helper.show(image_int, "from testPart2ThroughExtract");
   }
 
 
