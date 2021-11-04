@@ -17,8 +17,8 @@ public class Main {
     //---------------------------
     // Tests functions separately
     //---------------------------
-	System.out.println("Uncomment the function calls in Main.main to test your implementation Test mod.");
-	System.out.println("The provided tests are not complete. You have to write your own tests.");
+	//System.out.println("Uncomment the function calls in Main.main to test your implementation Test mod.");
+	//System.out.println("The provided tests are not complete. You have to write your own tests.");
 
     //***** Mathis's extra tests ******
     //testComputeSlope();
@@ -45,14 +45,14 @@ public class Main {
     //testOrientation();
     //*******************************
 
-    //testApplyRotation();
-    //testApplyTranslation();
-    testThin();
+    testApplyRotation();
+    testApplyTranslation();
+    //testThin();
     //testWithSkeleton();
     
-    testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
-    testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
-    testDrawSkeleton("2_1"); //draw skeleton of fingerprint 2_1.png
+    //testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
+    //testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
+    //testDrawSkeleton("2_1"); //draw skeleton of fingerprint 2_1.png
 
     //testDrawMinutiae("1_1"); //draw minutiae of fingerprint 1_1.png
     //testDrawMinutiae("1_2"); //draw minutiae of fingerprint 1_2.png
@@ -118,6 +118,7 @@ public class Main {
   public static void testBlackNeighbours () {
     System.out.print("testBlackNeighbours: ");
     boolean [] neighbours = {true, false, false, false, true, true, true, true};
+
     int blackNeighbours = Fingerprint.blackNeighbours(neighbours);
     int expected = 5;
     if (blackNeighbours==expected) {
@@ -129,6 +130,7 @@ public class Main {
   public static void testTransitions() {
     System.out.print("testTransition: ");
     boolean [] neighbours = {true, false, false, false, true, true, true, false};
+
     int transition = Fingerprint.transitions(neighbours);
     int expected = 2;
     if (transition==expected) {
@@ -140,11 +142,12 @@ public class Main {
 
   public static void testIdentical () {
     System.out.print("testIdentical 1: ");
+
     boolean[][] image1 = {{true}};     //testing two different arrays
     boolean[][] image2 = {{false}};
+
     boolean identical = Fingerprint.identical(image1, image2);
-    boolean expected = false;
-    if (identical==expected) {
+    if (!identical) {
       System.out.println("OK");
     }
     else System.out.println("ERROR");
@@ -154,13 +157,13 @@ public class Main {
                           {true, true, true, true, true, false},
                           {true, true, false, true, true, false},
                           {true, true, true, true, true, false}};
+
     boolean[][] imageB = {{true, true, false, true, true, false},
                           {true, true, true, true, true, false},
                           {true, true, false, true, true, false},
                           {true, true, true, true, true, false}};
     boolean identical1 = Fingerprint.identical(imageA, imageB);
-    boolean expected1 = true;
-    if (identical1==expected1) {
+    if (identical1) {
       System.out.println("OK");
     }
     else System.out.println("ERROR");
@@ -267,9 +270,9 @@ public class Main {
   public static void testComputeAngle() {
     // This is dependent on the well functioning of Compute Slope
     boolean[][] image = {{false, false, false, true},
-            {false, false, true, true},
-            {false, true, true, false},
-            {false, false, false, false}};
+                        {false, false, true, true},
+                        {false, true, true, false},
+                        {false, false, false, false}};
     double slope = Fingerprint.computeSlope(image, 2, 1);
     double angle = Fingerprint.computeAngle(image, 2, 1, slope);
     double expected_slope = 7.0/10 ;
@@ -438,7 +441,7 @@ public class Main {
    * applyTranslation. You are free to modify and/or delete it.
    */
   public static void testApplyTranslation() {
-    // minutia, rowTranslation, colTranslation)
+    // minutia, rowTranslation, colTranslation
     int[] result = Fingerprint.applyTranslation(new int[] {1, 3, 10}, 0, 0);
     System.out.println("Expected: 1,3,10");
     System.out.print("Computed: ");
@@ -460,7 +463,7 @@ public class Main {
   public static void testThin() {
 	    boolean[][] image1 = Helper.readBinary("resources/test_inputs/1_1_small.png");
 	    boolean[][] skeleton1 = Fingerprint.thin(image1);
-        printArray(skeleton1);
+        //printArray(skeleton1);
 	    Helper.writeBinary("skeleton_1_1_small.png", skeleton1);
   }
 

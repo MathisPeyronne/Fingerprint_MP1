@@ -80,7 +80,7 @@ public class Fingerprint {
       boolean neighbours [] = new boolean[8];
 
 
-      // filling the array for the general case (not at the outer border)
+      // filling the array for the general case with 8 neighbours
       if (row!=0 && col!=0 && row!=imageHeight-1 && col!=imageWidth-1) {
           neighbours[0] = image[row-1][col];
           neighbours[1] = image[row-1][col+1];
@@ -91,7 +91,7 @@ public class Fingerprint {
           neighbours[6] = image[row][col-1];
           neighbours[7] = image[row-1][col-1];
       }
-      // filling the array and checking for the special bordering cases beforehand
+      // filling the array but checking for the special bordering cases beforehand
       else {
           neighbours[0] = (row==0)? false : image[row-1][col];
           neighbours[1] = (row==0 || col==imageWidth-1)? false : image[row-1][col+1];
@@ -162,7 +162,7 @@ public class Fingerprint {
 
   public static boolean identical(boolean[][] image1, boolean[][] image2) {
       // iterates through the 2D array of image1 comparing every element of image1to its corresponding element in image2
-      // assume they have the same dimensions because elements can flip their truth value only
+      // they have the same dimensions
 	  for (int i=0; i<image1.length; i++) {
           for (int j=0; j<image1[i].length; j++) {
               boolean b1 = image1[i][j];
@@ -184,6 +184,7 @@ public class Fingerprint {
     }
     public static boolean step(boolean[][] image, int i, int j, int step) {
 
+      //checking conditions for unnecessary pixels (i,j) that will be set to false if they meet all the conditions
       if (    image[i][j] &&
               (2<=blackNeighbours(getNeighbours(image,i,j)) && blackNeighbours(getNeighbours(image,i,j))<=6) &&
               transitions(getNeighbours(image,i,j))==1 &&
@@ -204,10 +205,10 @@ public class Fingerprint {
 
 
   public static boolean[][] thinningStep(boolean[][] image, int step) {
-      boolean[][] thinningStep = new boolean[image.length][image[0].length];
-      for (int i=0; i<image.length; i++) {
+      boolean[][] thinningStep = new boolean[image.length][image[0].length];    // create new array with the dimensions of input image
+      for (int i=0; i<image.length; i++) {                                      // fill new array with evaluated (necessary) elements of input image
           for (int j=0; j<image[i].length; j++) {
-              thinningStep[i][j] = step(image,i,j,step);
+             thinningStep[i][j] = step(image,i,j,step);
           }
       }
 	  return thinningStep;
@@ -222,13 +223,9 @@ public class Fingerprint {
    */
   public static boolean[][] thin(boolean[][] image) {
       boolean [][] initial = copyArray(image);
-      // System.out.println("FIRST");
-     // Main.printArray(initial);
+
       boolean [][] second = thinningStep(initial,0);      // first step applied on initial
-      //System.out.println("");
-     // System.out.println("SECOND");
-      // Main.printArray(second);
-      boolean [][] third = thinningStep(second,1);        // second step applied on
+      boolean [][] third = thinningStep(second,1);        // second step applied on modified initial
 
       while (!identical(second,third)) {
           initial = copyArray(third);
@@ -480,7 +477,7 @@ public class Fingerprint {
       List<int[]> minutiae = new ArrayList<int[]>(); // the int[] characterising the minutia is [row, col, orientation(degrees)]
       //**********************
 
-      // Go through the whole image, get the nb of transitions, check if it is a minutia, if so add it to minutiae array with the direction data.
+      // Go through the whole image, get the no. of transitions, check if it is a minutia, if so add it to minutiae array with the direction data.
       for(int i = 1; i < image.length-1; ++i) { // we don't loop through the edges because we want minutiae with 8 neigh.
           for (int j = 1; j < image[0].length-1; ++j) {
               int nb_transition = transitions(getNeighbours(image, i, j));
@@ -505,8 +502,20 @@ public class Fingerprint {
    * @return the minutia rotated around the given center.
    */
   public static int[] applyRotation(int[] minutia, int centerRow, int centerCol, int rotation) {
-	  //TODO implement
-	  return null;
+
+      int x = minutia[1] - centerCol;
+      int y = centerRow - minutia[0];
+      double rotationRadians = Math.toRadians(rotation);                                   // rotation from degrees to radians
+      double newX_notRounded = x*Math.cos(rotationRadians)-y*Math.sin(rotationRadians);
+      double newY_notRounded = x*Math.sin(rotationRadians)+y*Math.cos(rotationRadians);
+      int newX = (int) Math.round(newX_notRounded);                                        // cast from double to int
+      int newY = (int) Math.round(newY_notRounded);                                        // cast from double to int
+      int newRow = centerRow-newY;
+      int newCol = newX + centerCol;
+      double newOrientation_notRounded = (minutia[2] + rotation) % 360;
+      int newOrientation = (int) newOrientation_notRounded;
+      int[] rotatedMinutia = {newRow, newCol, newOrientation};                              // fill rotated results into new array
+	  return rotatedMinutia;
   }
 
   /**
@@ -518,8 +527,11 @@ public class Fingerprint {
    * @return the translated minutia.
    */
   public static int[] applyTranslation(int[] minutia, int rowTranslation, int colTranslation) {
-	  //TODO implement
-	  return null;
+      int newRow = minutia[0] - rowTranslation;
+      int newCol = minutia[1] - colTranslation;
+      int newOrientation = minutia[2];
+      int [] translatedMinutia = {newRow, newCol, newOrientation};    // fill rotated results into new array
+      return translatedMinutia;
   } 
   
   /**
@@ -536,8 +548,9 @@ public class Fingerprint {
    */
   public static int[] applyTransformation(int[] minutia, int centerRow, int centerCol, int rowTranslation,
       int colTranslation, int rotation) {
-	  //TODO implement
-	  return null;
+      int [] rotatedMinutia = applyRotation(minutia,centerRow,centerCol,rotation);
+      int [] rotated_translatedMinutia = applyTranslation(rotatedMinutia,rowTranslation,colTranslation);
+	  return rotated_translatedMinutia;
   }
 
   /**
@@ -554,8 +567,11 @@ public class Fingerprint {
    */
   public static List<int[]> applyTransformation(List<int[]> minutiae, int centerRow, int centerCol, int rowTranslation,
       int colTranslation, int rotation) {
-	  //TODO implement
-	  return null;
+      ArrayList<int []> transformedMinutiae =new ArrayList<int[]>(minutiae.size());
+      for (int i=0; i<minutiae.size(); i++){
+          transformedMinutiae.set(i, applyTransformation(minutiae.get(i),centerRow,centerCol,rowTranslation,colTranslation, rotation));
+      }
+	  return transformedMinutiae;
   }
   /**
    * Counts the number of overlapping minutiae.
@@ -568,10 +584,9 @@ public class Fingerprint {
    *                       minutiae to consider them as overlapping.
    * @return the number of overlapping minutiae.
    */
-  public static int matchingMinutiaeCount(List<int[]> minutiae1, List<int[]> minutiae2, int maxDistance,
-      int maxOrientation) {
-	  //TODO implement
-	  return 0;
+  public static int matchingMinutiaeCount(List<int[]> minutiae1, List<int[]> minutiae2, int maxDistance, int maxOrientation) {
+
+      return 0;
   }
 
   /**
@@ -583,7 +598,7 @@ public class Fingerprint {
    *         otherwise.
    */
   public static boolean match(List<int[]> minutiae1, List<int[]> minutiae2) {
-	  //TODO implement
+
 	  return false;
   }
 }
