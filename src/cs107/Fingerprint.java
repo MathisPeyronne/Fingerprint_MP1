@@ -275,6 +275,8 @@ public class Fingerprint {
                 //Condition: the pixel is connected to our minutia therefore connected to a black pixel
                 //All the try/catch are to not have any problems with pixels that are on the edge.
                 // Didn't find a simpler way to handle it. All others were more complex.
+
+                /*
                 top_left = top = top_right = right = bottom_right = bottom = bottom_left = left = false;
                 try{
                     top_right = connectedPixels[i-1][j+1];
@@ -318,6 +320,15 @@ public class Fingerprint {
                 }
 
                 is_connected = right || left || bottom || top || top_left || top_right || bottom_right || bottom_left;
+
+
+                 */
+
+                // second possibility, is_connected
+
+                int nb_of_black_neighbors = blackNeighbours(getNeighbours(connectedPixels, i, j));
+
+                is_connected = nb_of_black_neighbors > 0;
 
                 //Condition: The pixel is in the square of size 2*distance + 1 centered on the minutia
                 is_in_distance = i <= row + distance && i >= row - distance && j <= col + distance && j >= col - distance;
