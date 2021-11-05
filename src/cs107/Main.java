@@ -20,17 +20,6 @@ public class Main {
 	//System.out.println("Uncomment the function calls in Main.main to test your implementation Test mod.");
 	//System.out.println("The provided tests are not complete. You have to write your own tests.");
 
-    //***** Mathis's extra tests ******
-    //testComputeSlope();
-    //testComputeAngle();
-    //testComputeAngle2(); // this is also a good test for computeSlope() cf. output
-    //testComputeAngle3Infinity(); // test the case where the slope is positive infinity.
-    //testOrientation2BigAngle();
-    //testOrientation3Vertical();
-    //testOrientation4NegativeSlope();
-    //testPart2ThroughExtract(); // this one is the last one to finish
-    //*********************************
-
     //****** Tests for Part1 ******
     //testGetNeighbours();
     //testBlackNeighbours();
@@ -43,7 +32,16 @@ public class Main {
     //testConnectedPixels2();
     //testConnectedPixels3();
     //testOrientation();
-    //*******************************
+    //***** Extra tests Part2 ******
+    //testComputeSlope();
+    //testComputeAngle();
+    //testComputeAngle2(); // this is also a good test for computeSlope() cf. output
+    //testComputeAngle3Infinity(); // test the case where the slope is positive infinity.
+    //testOrientation2BigAngle();
+    //testOrientation3Vertical();
+    //testOrientation4NegativeSlope();
+    //testPart2ThroughExtract(); // this one is the last one to finish
+    //*********************************
 
     //testApplyRotation();
     //testApplyTranslation();
