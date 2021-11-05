@@ -250,26 +250,28 @@ public class Fingerprint {
       connectedPixels[row][col] = true; //light up the minutia
 
 
-      boolean still_modifying = true;
-      boolean is_black;
-      boolean is_connected;
-      //**sub states of is_connected**
+      boolean stillModifying = true;
+      boolean isBlack;
+      boolean isConnected;
+      //**sub states of isConnected**
       boolean skip_top, top_left, top, top_right, right, bottom_right, bottom, bottom_left, left;
       skip_top = top_left = top = top_right = right = bottom_right = bottom = bottom_left = left = false;
 
       //*********
-      boolean is_in_distance;
-      while(still_modifying){
-          still_modifying = false;
+      boolean isInDistance;
+      while(stillModifying){
+          stillModifying = false;
           for(int i = 0; i< image.length; i++) {
               for(int j = 0; j < image[0].length; j++) {
                 //testing if the cell at i,j is connected to the minutia
                 //Condition: the pixel at this position is black
-                is_black = image[i][j]; //same as image[i][j] == true
+                isBlack = image[i][j]; //same as image[i][j] == true
 
                 //Condition: the pixel is connected to our minutia therefore connected to a black pixel
                 //All the try/catch are to not have any problems with pixels that are on the edge.
                 // Didn't find a simpler way to handle it. All others were more complex.
+
+                /*
                 top_left = top = top_right = right = bottom_right = bottom = bottom_left = left = false;
                 try{
                     top_right = connectedPixels[i-1][j+1];
@@ -312,15 +314,24 @@ public class Fingerprint {
                     ;
                 }
 
-                is_connected = right || left || bottom || top || top_left || top_right || bottom_right || bottom_left;
+                isConnected = right || left || bottom || top || top_left || top_right || bottom_right || bottom_left;
+
+
+                 */
+
+                // second possibility, isConnected
+
+                int nb_of_black_neighbors = blackNeighbours(getNeighbours(connectedPixels, i, j));
+
+                isConnected = nb_of_black_neighbors > 0;
 
                 //Condition: The pixel is in the square of size 2*distance + 1 centered on the minutia
-                is_in_distance = i <= row + distance && i >= row - distance && j <= col + distance && j >= col - distance;
+                isInDistance = i <= row + distance && i >= row - distance && j <= col + distance && j >= col - distance;
 
-                if(is_black && is_connected && is_in_distance){
+                if(isBlack && isConnected && isInDistance){
                   if(!connectedPixels[i][j]) {
                     connectedPixels[i][j] = true;
-                    still_modifying = true; // is used to spot when to terminate
+                    stillModifying = true; // is used to spot when to terminate
                   }
                 }
 
@@ -341,19 +352,19 @@ public class Fingerprint {
    */
   public static double computeSlope(boolean[][] connectedPixels, int row, int col) {
       // compute somme of x*y
-      double sum_x_times_y = 0;
+      double sumXTimesY = 0;
 
       // compute somme of x^2
-      double sum_x_squared = 0;
+      double sumXSquared = 0;
       // compute somme of y^2
-      double sum_y_squared = 0;
+      double sumYSquared = 0;
       //slope
       double slope;
 
       //useful placeholders
       double x, y;
 
-      // compute sum_x_times_y, sum_x_squared, sum_y_squared
+      // compute sumXTimesY, sumXSquared, sumYSquared
       for(int i = 0; i < connectedPixels.length; ++i) {
           for (int j = 0; j < connectedPixels[0].length; ++j) {
             if(connectedPixels[i][j] && (i != row || j != col)){ // if black and is not the minutia
@@ -361,21 +372,21 @@ public class Fingerprint {
                 x = j-col;
                 y = row-i;
 
-                sum_x_times_y += x*y;
-                sum_x_squared += Math.pow(x,2);
-                sum_y_squared += Math.pow(y,2);
+                sumXTimesY += x*y;
+                sumXSquared += Math.pow(x,2);
+                sumYSquared += Math.pow(y,2);
             }
           }
       }
 
       //takes care of the case where the slope is infinite(the line is vertical)
-      if(sum_x_squared == 0){
+      if(sumXSquared == 0){
           return Double.POSITIVE_INFINITY;
       }
-      if(sum_x_squared >= sum_y_squared){
-          slope = sum_x_times_y/sum_x_squared;
+      if(sumXSquared >= sumYSquared){
+          slope = sumXTimesY/sumXSquared;
       } else{
-          slope = sum_y_squared/sum_x_times_y;
+          slope = sumYSquared/sumXTimesY;
       }
 	  return slope;
   }
@@ -392,21 +403,21 @@ public class Fingerprint {
    * @return the orientation of the minutia in radians.
    */
   public static double computeAngle(boolean[][] connectedPixels, int row, int col, double slope) {
-      double default_angle;
+      double defaultAngle;
       // treats the case where slope was infinity
       if(slope == Double.POSITIVE_INFINITY){
-          default_angle = Math.PI/2;
+          defaultAngle = Math.PI/2;
       }else{
-          default_angle = Math.atan(slope);
+          defaultAngle = Math.atan(slope);
       }
 
-      double correct_angle;
-      int nb_pixels_above = 0;
-      int nb_pixels_below = 0;
+      double correctAngle;
+      int nbPixelsAbove = 0;
+      int nbPixelsBelow = 0;
       // useful variables
       double x, y;
 
-      // compute nb_pixels_above and nb_pixels_below
+      // compute nbPixelsAbove and nbPixelsBelow
       for(int i = 0; i < connectedPixels.length; ++i) {
           for (int j = 0; j < connectedPixels[0].length; ++j) {
               if(connectedPixels[i][j] && (i != row || j != col)){ // if black and is not the minutia
@@ -415,24 +426,24 @@ public class Fingerprint {
                   y = row-i;
 
                   if(y >= (-1/slope)*x){
-                      ++nb_pixels_above;
+                      ++nbPixelsAbove;
                   }else{
-                      ++nb_pixels_below;
+                      ++nbPixelsBelow;
                   }
               }
           }
       }
 
-      // gives the default_angle the proper direction -> correct_angle.
+      // gives the defaultAngle the proper direction -> correctAngle.
       // I could put the if and the else if together but less readable.
-      if(default_angle > 0 && nb_pixels_below > nb_pixels_above){ // test if it should be in quadrant 3
-          correct_angle = default_angle + Math.PI;
-      } else if(default_angle < 0 && nb_pixels_above > nb_pixels_below){ // test if it should be in quadrant 2
-          correct_angle = default_angle + Math.PI;
+      if(defaultAngle > 0 && nbPixelsBelow > nbPixelsAbove){ // test if it should be in quadrant 3
+          correctAngle = defaultAngle + Math.PI;
+      } else if(defaultAngle < 0 && nbPixelsAbove > nbPixelsBelow){ // test if it should be in quadrant 2
+          correctAngle = defaultAngle + Math.PI;
       } else{ // else it means that it is correctly in quadrant 1 or 4.
-          correct_angle = default_angle;
+          correctAngle = defaultAngle;
       }
-	  return correct_angle;
+	  return correctAngle;
   }
 
   /**
@@ -448,16 +459,16 @@ public class Fingerprint {
    */
   public static int computeOrientation(boolean[][] image, int row, int col, int distance) {
 
-      boolean [][] connected_pixels = connectedPixels(image, row, col, distance);
-      double slope = computeSlope(connected_pixels, row, col);
-      double angle = computeAngle(connected_pixels, row, col, slope);
-      int angle_degree = (int)Math.round(Math.toDegrees(angle));
+      boolean [][] connectedPixels = connectedPixels(image, row, col, distance);
+      double slope = computeSlope(connectedPixels, row, col);
+      double angle = computeAngle(connectedPixels, row, col, slope);
+      int angleDegree = (int)Math.round(Math.toDegrees(angle));
 
-      if(angle_degree < 0){ // handles negative angles
-          angle_degree += 360;
+      if(angleDegree < 0){ // handles negative angles
+          angleDegree += 360;
       }
 
-	  return angle_degree;
+	  return angleDegree;
   }
 
   /**
@@ -478,8 +489,8 @@ public class Fingerprint {
       // Go through the whole image, get the no. of transitions, check if it is a minutia, if so add it to minutiae array with the direction data.
       for(int i = 1; i < image.length-1; ++i) { // we don't loop through the edges because we want minutiae with 8 neigh.
           for (int j = 1; j < image[0].length-1; ++j) {
-              int nb_transition = transitions(getNeighbours(image, i, j));
-              if(image[i][j] && (nb_transition == 1 || nb_transition == 3)){ // this tests if it is a minutia
+              int nbTransition = transitions(getNeighbours(image, i, j));
+              if(image[i][j] && (nbTransition == 1 || nbTransition == 3)){ // this tests if it is a minutia
                   orientation = computeOrientation(image, i, j, ORIENTATION_DISTANCE);
                   minutiae.add(new int[] {i, j, orientation});  // [row, col, orientation(degrees)]
               }
