@@ -1,7 +1,5 @@
 package cs107;
 
-import jdk.swing.interop.DropTargetContextWrapper;
-
 import java.util.List;
 import java.util.ArrayList;
 
@@ -567,12 +565,27 @@ public class Fingerprint {
    */
   public static List<int[]> applyTransformation(List<int[]> minutiae, int centerRow, int centerCol, int rowTranslation,
       int colTranslation, int rotation) {
-      ArrayList<int []> transformedMinutiae =new ArrayList<int[]>(minutiae.size());
+
+      ArrayList<int[]> transformedMinutiae = new ArrayList<int[]>();
+
       for (int i=0; i<minutiae.size(); i++){
-          transformedMinutiae.set(i, applyTransformation(minutiae.get(i),centerRow,centerCol,rowTranslation,colTranslation, rotation));
+          transformedMinutiae.add(i, applyTransformation(minutiae.get(i),centerRow,centerCol,rowTranslation,colTranslation, rotation));
       }
 	  return transformedMinutiae;
   }
+
+    public static boolean checkSuperImposed(int[]list1Minutia, int[]list2Minutia, int maxDistance, int maxOrientation) {
+        double euclideanDistance = Math.sqrt((list1Minutia[0]-list2Minutia[0])*(list1Minutia[0]-list2Minutia[0])
+                                    +(list1Minutia[1]-list2Minutia[1])*(list1Minutia[1]-list2Minutia[1]));
+
+        int differenceOrientation = Math.abs(list1Minutia[2]-list2Minutia[2]);
+
+        if (euclideanDistance<=maxDistance && differenceOrientation<=maxOrientation){
+            return true;                                                                // the two compared minutia match
+        }
+
+        return false;
+    }
   /**
    * Counts the number of overlapping minutiae.
    *
@@ -584,9 +597,20 @@ public class Fingerprint {
    *                       minutiae to consider them as overlapping.
    * @return the number of overlapping minutiae.
    */
-  public static int matchingMinutiaeCount(List<int[]> minutiae1, List<int[]> minutiae2, int maxDistance, int maxOrientation) {
 
-      return 0;
+
+  public static int matchingMinutiaeCount(List<int[]> minutiae1, List<int[]> minutiae2, int maxDistance, int maxOrientation) {
+      int count = 0;
+
+      for (int i=0; i<minutiae1.size(); i++) {
+          for (int j=0; j<minutiae2.size(); j++){
+              if (checkSuperImposed(minutiae1.get(i), minutiae2.get(j), maxDistance, maxOrientation)) {
+                  count++;
+              }
+          }
+      }
+
+      return count;
   }
 
   /**
@@ -599,6 +623,26 @@ public class Fingerprint {
    */
   public static boolean match(List<int[]> minutiae1, List<int[]> minutiae2) {
 
-	  return false;
+      for (int i = 0; i < minutiae1.size(); i++) {
+          int[] m_1 = minutiae1.get(i);
+          for (int j = 0; j < minutiae2.size(); j++) {
+              int [] m_2 = minutiae2.get(j);
+              int rotation = m_2[2]-m_1[2];
+              for (int k = rotation-MATCH_ANGLE_OFFSET; k < rotation + MATCH_ANGLE_OFFSET ; k++) {
+                 List<int[]> transformedMinutiae =
+                  applyTransformation(minutiae2,  minutiae1.get(i)[0],  minutiae1.get(i)[1],
+                          minutiae2.get(j)[0]-minutiae1.get(i)[0], minutiae2.get(j)[1]-minutiae1.get(i)[1], rotation);
+
+                 int resultCount = matchingMinutiaeCount(minutiae1,transformedMinutiae,DISTANCE_THRESHOLD,ORIENTATION_THRESHOLD);
+                 if ( resultCount >= FOUND_THRESHOLD ) return true;
+
+              }
+
+          }
+
+      }
+
+      return false;
+
   }
 }

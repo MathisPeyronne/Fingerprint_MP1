@@ -45,8 +45,8 @@ public class Main {
     //testOrientation();
     //*******************************
 
-    testApplyRotation();
-    testApplyTranslation();
+    //testApplyRotation();
+    //testApplyTranslation();
     //testThin();
     //testWithSkeleton();
     
