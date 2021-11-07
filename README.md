@@ -10,9 +10,8 @@
 - The extra tests for part 2 can be found in "Extra tests Part2" in Main.
 
 ## Part 3: Comparison
-- Please find detailed explanations for every additional method and its parameters in green text above its declaration in Fingerprint.java
 
-RESULTS:
+Results:
 
 Compare 1_1 with 1_1. Expected match: true Computed match: true
 Compare 1_1 with 1_2. Expected match: true Computed match: true
