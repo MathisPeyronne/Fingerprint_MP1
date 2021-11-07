@@ -281,11 +281,7 @@ public class Fingerprint {
         boolean stillModifying = true;
         boolean isBlack;
         boolean isConnected;
-        //**sub states of isConnected**
-        boolean skip_top, top_left, top, top_right, right, bottom_right, bottom, bottom_left, left;
-        skip_top = top_left = top = top_right = right = bottom_right = bottom = bottom_left = left = false;
 
-        //*********
         boolean isInDistance;
         while (stillModifying) {
             stillModifying = false;
