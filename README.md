@@ -1,6 +1,9 @@
 # Fingerprint_MP1
 
 ## Part 1
+- Please find detailed explanations for every additional method 
+- and its parameters in greentext above its declaration in the Fingerprint.java file
+- basic tests have been added in Main.java
 
 ## Part 2
 
