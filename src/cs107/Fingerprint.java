@@ -231,9 +231,13 @@ public class Fingerprint {
 
 
     public static boolean[][] thinningStep(boolean[][] image, int step) {
-        boolean[][] thinningStep = new boolean[image.length][image[0].length];    // create new array with the dimensions of input image
-        for (int i = 0; i < image.length; i++) {                                      // fill new array with evaluated (necessary) elements of input image
+        // create new array with the dimensions of input image
+        boolean[][] thinningStep = new boolean[image.length][image[0].length];
+
+        // fill this new array with evaluated (necessary) elements of input image
+        for (int i = 0; i < image.length; i++) {
             for (int j = 0; j < image[i].length; j++) {
+                // calls step() to check the importance of the pixel (i,j)
                 thinningStep[i][j] = step(image, i, j, step);
             }
         }
@@ -250,9 +254,13 @@ public class Fingerprint {
     public static boolean[][] thin(boolean[][] image) {
         boolean[][] initial = copyArray(image);
 
-        boolean[][] second = thinningStep(initial, 0);      // first step applied on initial
-        boolean[][] third = thinningStep(second, 1);        // second step applied on modified initial
+        // first step applied on initial
+        boolean[][] second = thinningStep(initial, 0);
 
+        // second step applied on modified (thinned) initial
+        boolean[][] third = thinningStep(second, 1);
+
+        // loop until the images don't differ from another anymore after having applied a thinning step
         while (!identical(second, third)) {
             initial = copyArray(third);
             second = thinningStep(initial, 0);
@@ -485,16 +493,17 @@ public class Fingerprint {
 
         int x = minutia[1] - centerCol;
         int y = centerRow - minutia[0];
-        double rotationRadians = Math.toRadians(rotation);                                      // rotation from degrees to radians
+        // rotation from degrees to radians
+        double rotationRadians = Math.toRadians(rotation);
         double newX_notRounded = x * Math.cos(rotationRadians) - y * Math.sin(rotationRadians);
         double newY_notRounded = x * Math.sin(rotationRadians) + y * Math.cos(rotationRadians);
-        int newX = (int) Math.round(newX_notRounded);                                           // cast from double to int
-        int newY = (int) Math.round(newY_notRounded);                                           // cast from double to int
+        int newX = (int) Math.round(newX_notRounded);       // cast from double to int
+        int newY = (int) Math.round(newY_notRounded);       // cast from double to int
         int newRow = centerRow - newY;
         int newCol = newX + centerCol;
         double newOrientation_notRounded = (minutia[2] + rotation) % 360;
         int newOrientation = (int) newOrientation_notRounded;
-        int[] rotatedMinutia = {newRow, newCol, newOrientation};                                 // fill rotated results into new array
+        int[] rotatedMinutia = {newRow, newCol, newOrientation};    // fill rotated results into new array
         return rotatedMinutia;
     }
 
@@ -510,7 +519,10 @@ public class Fingerprint {
         int newRow = minutia[0] - rowTranslation;
         int newCol = minutia[1] - colTranslation;
         int newOrientation = minutia[2];
-        int[] translatedMinutia = {newRow, newCol, newOrientation};       // fill rotated results into new array
+
+        // fill rotated results into new array
+        int[] translatedMinutia = {newRow, newCol, newOrientation};
+
         return translatedMinutia;
     }
 
@@ -572,7 +584,6 @@ public class Fingerprint {
     public static boolean checkSuperImposed(int[] list1Minutia, int[] list2Minutia, int maxDistance, int maxOrientation) {
         double euclideanDistance = Math.sqrt((list1Minutia[0] - list2Minutia[0]) * (list1Minutia[0] - list2Minutia[0])
                 + (list1Minutia[1] - list2Minutia[1]) * (list1Minutia[1] - list2Minutia[1]));
-
         int differenceOrientation = Math.abs(list1Minutia[2] - list2Minutia[2]);
 
         if (euclideanDistance <= maxDistance && differenceOrientation <= maxOrientation) {
@@ -618,10 +629,10 @@ public class Fingerprint {
      * otherwise.
      */
     public static boolean match(List<int[]> minutiae1, List<int[]> minutiae2) {
-        // iterates through minutiae1
+        // iterates through list minutiae1
         for (int i = 0; i < minutiae1.size(); i++) {
             int[] m_1 = minutiae1.get(i);
-            // iterates through minutiae2
+            // iterates through list minutiae2
             for (int j = 0; j < minutiae2.size(); j++) {
                 int[] m_2 = minutiae2.get(j);
                 int rotation = m_2[2] - m_1[2];
