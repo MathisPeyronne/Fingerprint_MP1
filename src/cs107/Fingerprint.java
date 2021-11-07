@@ -64,18 +64,16 @@ public class Fingerprint {
      *              <code>image[row].length</code>(excluded).
      * @return An array containing each neighbours' value.
      */
-
     public static boolean[] getNeighbours(boolean[][] image, int row, int col) {
         assert (image != null); // special case that is not expected (the image is supposed to have been earlier)
 
-        // get dimensions of the rectangular array image
+        // get dimensions of the rectangular boolean[][] image
         int imageHeight = image.length;
         boolean[] rowOne = image[0];
         int imageWidth = rowOne.length;
 
-        // neighbours[] is the array to be returned by getNeighbours()
+        // neighbours[] is the array going to be returned by getNeighbours()
         boolean neighbours[] = new boolean[8];
-
 
         // filling the array for the general case with 8 neighbours
         if (row != 0 && col != 0 && row != imageHeight - 1 && col != imageWidth - 1) {
@@ -88,7 +86,7 @@ public class Fingerprint {
             neighbours[6] = image[row][col - 1];
             neighbours[7] = image[row - 1][col - 1];
         }
-        // filling the array but checking for the special bordering cases beforehand
+        // filling the array but checking for the special bordering cases beforehand using shortened if/else statement
         else {
             neighbours[0] = (row == 0) ? false : image[row - 1][col];
             neighbours[1] = (row == 0 || col == imageWidth - 1) ? false : image[row - 1][col + 1];
@@ -99,7 +97,6 @@ public class Fingerprint {
             neighbours[6] = (col == 0) ? false : image[row][col - 1];
             neighbours[7] = (row == 0 || col == 0) ? false : image[row - 1][col - 1];
         }
-
         return neighbours;
     }
 
@@ -114,7 +111,6 @@ public class Fingerprint {
      * @return the number of black neighbours.
      */
     public static int blackNeighbours(boolean[] neighbours) {
-
         int blackNeighbours = 0;
         for (int i = 0; i < neighbours.length; i++) {
             if (neighbours[i] == true) {
@@ -136,12 +132,14 @@ public class Fingerprint {
     public static int transitions(boolean[] neighbours) {
 
         int transitions = 0;
-        for (int i = 0; i <= 6; i++) {                                                          // only check until P_6
+        // only check until P_6 because P_7+1 returns an error
+        for (int i = 0; i <= 6; i++) {
             if (neighbours[i] == false && (neighbours[i + 1] == true)) {
                 transitions++;
             }
         }
-        if (neighbours[neighbours.length - 1] == false && neighbours[0] == true) {           // check special last case P_7
+        // check special last case P_7 and P_0
+        if (neighbours[neighbours.length - 1] == false && neighbours[0] == true) {
             transitions++;
         }
         return transitions;
@@ -155,10 +153,8 @@ public class Fingerprint {
      * @return <code>True</code> if they are identical, <code>false</code>
      * otherwise.
      */
-
-
     public static boolean identical(boolean[][] image1, boolean[][] image2) {
-        // iterates through the 2D array of image1 comparing every element of image1to its corresponding element in image2
+        // iterates through image1 comparing every element of image1to its corresponding element in image2
         // they have the same dimensions
         for (int i = 0; i < image1.length; i++) {
             for (int j = 0; j < image1[i].length; j++) {
@@ -172,6 +168,15 @@ public class Fingerprint {
         return true;
     }
 
+    /**
+     * ADDITIONAL METHOD
+     *
+     * copies an array
+     * used by thin()
+     *
+     * @param image the array to be copied
+     * @return copy of parameter input image
+     */
     public static boolean[][] copyArray(boolean[][] image) {
         boolean copy[][] = new boolean[image.length][image[0].length];
         for (int i = 0; i < image.length; i++) {
@@ -182,16 +187,38 @@ public class Fingerprint {
         return copy;
     }
 
+    /**
+     * ADDITIONAL METHOD TO FOR BETTER READABILITY
+     *
+     * applies either step 0 or 1 of the conditions for thinning on a single pixel
+     * used by thinningStep()
+     *
+     * Note that the same if-statement is checked for both steps 0 and 1 and "step" acts a parameter within the condition for the if-statement
+     * We can do this because the conditions for step 0 and 1 are similar (verify the thinning conditions below)
+     *
+     *
+     * @param image
+     * @param i row value
+     * @param j column value
+     * @param step 0 or 1
+     * @return false (if all the conditions are met), otherwise it keeps its original truth value
+     */
     public static boolean step(boolean[][] image, int i, int j, int step) {
+        //checking conditions for a single pixel (i,j) that will be set to false it meets all conditions
+        if (
+            image[i][j] &&
 
-        //checking conditions for unnecessary pixels (i,j) that will be set to false if they meet all the conditions
-        if (image[i][j] &&
-                (2 <= blackNeighbours(getNeighbours(image, i, j)) && blackNeighbours(getNeighbours(image, i, j)) <= 6) &&
-                transitions(getNeighbours(image, i, j)) == 1 &&
-                (!getNeighbours(image, i, j)[0] || !getNeighbours(image, i, j)[2] || !getNeighbours(image, i, j)[2 * step + 4]) &&
-                (!getNeighbours(image, i, j)[-2 * step + 2] || !getNeighbours(image, i, j)[4] || !getNeighbours(image, i, j)[6])) {
+            (2 <= blackNeighbours(getNeighbours(image, i, j)) && blackNeighbours(getNeighbours(image, i, j)) <= 6) &&
+
+            transitions(getNeighbours(image, i, j)) == 1 &&
+
+            (!getNeighbours(image, i, j)[0] || !getNeighbours(image, i, j)[2] || !getNeighbours(image, i, j)[2 * step + 4]) &&
+
+            (!getNeighbours(image, i, j)[-2 * step + 2] || !getNeighbours(image, i, j)[4] || !getNeighbours(image, i, j)[6])
+        )
             return false;
-        } else return image[i][j];
+
+        else return image[i][j];
     }
 
     /**
@@ -462,16 +489,16 @@ public class Fingerprint {
 
         int x = minutia[1] - centerCol;
         int y = centerRow - minutia[0];
-        double rotationRadians = Math.toRadians(rotation);                                   // rotation from degrees to radians
+        double rotationRadians = Math.toRadians(rotation);                                      // rotation from degrees to radians
         double newX_notRounded = x * Math.cos(rotationRadians) - y * Math.sin(rotationRadians);
         double newY_notRounded = x * Math.sin(rotationRadians) + y * Math.cos(rotationRadians);
-        int newX = (int) Math.round(newX_notRounded);                                        // cast from double to int
-        int newY = (int) Math.round(newY_notRounded);                                        // cast from double to int
+        int newX = (int) Math.round(newX_notRounded);                                           // cast from double to int
+        int newY = (int) Math.round(newY_notRounded);                                           // cast from double to int
         int newRow = centerRow - newY;
         int newCol = newX + centerCol;
         double newOrientation_notRounded = (minutia[2] + rotation) % 360;
         int newOrientation = (int) newOrientation_notRounded;
-        int[] rotatedMinutia = {newRow, newCol, newOrientation};                              // fill rotated results into new array
+        int[] rotatedMinutia = {newRow, newCol, newOrientation};                                 // fill rotated results into new array
         return rotatedMinutia;
     }
 
@@ -487,7 +514,7 @@ public class Fingerprint {
         int newRow = minutia[0] - rowTranslation;
         int newCol = minutia[1] - colTranslation;
         int newOrientation = minutia[2];
-        int[] translatedMinutia = {newRow, newCol, newOrientation};    // fill rotated results into new array
+        int[] translatedMinutia = {newRow, newCol, newOrientation};       // fill rotated results into new array
         return translatedMinutia;
     }
 
@@ -505,6 +532,7 @@ public class Fingerprint {
      */
     public static int[] applyTransformation(int[] minutia, int centerRow, int centerCol, int rowTranslation,
                                             int colTranslation, int rotation) {
+
         int[] rotatedMinutia = applyRotation(minutia, centerRow, centerCol, rotation);
         int[] rotated_translatedMinutia = applyTranslation(rotatedMinutia, rowTranslation, colTranslation);
         return rotated_translatedMinutia;
@@ -524,15 +552,27 @@ public class Fingerprint {
      */
     public static List<int[]> applyTransformation(List<int[]> minutiae, int centerRow, int centerCol, int rowTranslation,
                                                   int colTranslation, int rotation) {
-
+        // create empty list of undefined size
         ArrayList<int[]> transformedMinutiae = new ArrayList<int[]>();
 
+        // fill list with rotated and translated minutiae
         for (int i = 0; i < minutiae.size(); i++) {
             transformedMinutiae.add(i, applyTransformation(minutiae.get(i), centerRow, centerCol, rowTranslation, colTranslation, rotation));
         }
         return transformedMinutiae;
     }
 
+    /**
+     * ADDITIONAL METHOD TO FOR BETTER READABILITY
+     *
+     * checks if two single minutiae can be superimposed, used by matchingMinutiaeCount()
+     *
+     * @param list1Minutia
+     * @param list2Minutia
+     * @param maxDistance
+     * @param maxOrientation
+     * @return true (if the discrepancy is below certain values), false in every other case
+     */
     public static boolean checkSuperImposed(int[] list1Minutia, int[] list2Minutia, int maxDistance, int maxOrientation) {
         double euclideanDistance = Math.sqrt((list1Minutia[0] - list2Minutia[0]) * (list1Minutia[0] - list2Minutia[0])
                 + (list1Minutia[1] - list2Minutia[1]) * (list1Minutia[1] - list2Minutia[1]));
@@ -540,7 +580,7 @@ public class Fingerprint {
         int differenceOrientation = Math.abs(list1Minutia[2] - list2Minutia[2]);
 
         if (euclideanDistance <= maxDistance && differenceOrientation <= maxOrientation) {
-            return true;                                                                // the two compared minutia match
+            return true;
         }
 
         return false;
@@ -582,12 +622,14 @@ public class Fingerprint {
      * otherwise.
      */
     public static boolean match(List<int[]> minutiae1, List<int[]> minutiae2) {
-
+        // iterates through minutiae1
         for (int i = 0; i < minutiae1.size(); i++) {
             int[] m_1 = minutiae1.get(i);
+            // iterates through minutiae2
             for (int j = 0; j < minutiae2.size(); j++) {
                 int[] m_2 = minutiae2.get(j);
                 int rotation = m_2[2] - m_1[2];
+                // iteration due to imprecise angle from lower bound to upper bound
                 for (int k = rotation - MATCH_ANGLE_OFFSET; k < rotation + MATCH_ANGLE_OFFSET; k++) {
                     List<int[]> transformedMinutiae =
                             applyTransformation(minutiae2, minutiae1.get(i)[0], minutiae1.get(i)[1],
