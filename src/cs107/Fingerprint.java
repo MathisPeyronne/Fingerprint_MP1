@@ -260,7 +260,7 @@ public class Fingerprint {
         // second step applied on modified (thinned) initial
         boolean[][] third = thinningStep(second, 1);
 
-        // loop until the images don't differ from another anymore after having applied a thinning step
+        // if second and third are not identical, loop until the images don't differ from another anymore after having applied a thinning step
         while (!identical(second, third)) {
             initial = copyArray(third);
             second = thinningStep(initial, 0);
@@ -498,7 +498,7 @@ public class Fingerprint {
         double newX_notRounded = x * Math.cos(rotationRadians) - y * Math.sin(rotationRadians);
         double newY_notRounded = x * Math.sin(rotationRadians) + y * Math.cos(rotationRadians);
         int newX = (int) Math.round(newX_notRounded);       // cast from double to int
-        int newY = (int) Math.round(newY_notRounded);       // cast from double to int
+        int newY = (int) Math.round(newY_notRounded);       //...
         int newRow = centerRow - newY;
         int newCol = newX + centerCol;
         double newOrientation_notRounded = (minutia[2] + rotation) % 360;
@@ -629,15 +629,16 @@ public class Fingerprint {
      * otherwise.
      */
     public static boolean match(List<int[]> minutiae1, List<int[]> minutiae2) {
+        // we will try to transform the all the minutiae from list 2 ONTO list 1.
         // iterates through list minutiae1
         for (int i = 0; i < minutiae1.size(); i++) {
-            int[] m_1 = minutiae1.get(i);
+            int[] m_1 = minutiae1.get(i); // saves the current minutia from list minutiae1
             // iterates through list minutiae2
             for (int j = 0; j < minutiae2.size(); j++) {
-                int[] m_2 = minutiae2.get(j);
+                int[] m_2 = minutiae2.get(j);  //saves the current minutia from list minutiae2
                 int rotation = m_2[2] - m_1[2];
                 // iteration due to imprecise angle from lower bound to upper bound
-                for (int k = rotation - MATCH_ANGLE_OFFSET; k < rotation + MATCH_ANGLE_OFFSET; k++) {
+                for (int r = rotation - MATCH_ANGLE_OFFSET; r < rotation + MATCH_ANGLE_OFFSET; r++) {
                     List<int[]> transformedMinutiae =
                             applyTransformation(minutiae2, minutiae1.get(i)[0], minutiae1.get(i)[1],
                                     minutiae2.get(j)[0] - minutiae1.get(i)[0], minutiae2.get(j)[1] - minutiae1.get(i)[1], rotation);
