@@ -285,7 +285,7 @@ public class Main {
 
   /**                       **by us**
    * This function is by us. It tests the functionalities of
-   * computeAngle.
+   * computeAngle. It tests an angle > 90.
    */
   public static void testComputeAngle2() {
     // This is dependent on the well functioning of Compute Slope
