@@ -285,12 +285,11 @@ public class Fingerprint {
         boolean[][] connectedPixels = new boolean[image.length][image[0].length]; //Filled by default of false
         connectedPixels[row][col] = true; //light up the minutia
 
-
         boolean stillModifying = true;
         boolean isBlack;
         boolean isConnected;
-
         boolean isInDistance;
+
         while (stillModifying) {
             stillModifying = false;
             for (int i = 0; i < image.length; i++) {
