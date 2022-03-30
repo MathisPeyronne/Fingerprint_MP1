@@ -1,5 +1,11 @@
 # Fingerprint_MP1
 
+<p align = "center">
+      <img src="resources/test_outputs/minutiae_1_1.png" width="24%" /> 
+      <img src="resources/test_outputs/minutiae_1_2.png" width="24%" /> 
+      <img src="resources/test_outputs/minutiae_2_1.png" width="24%" />   
+</p>
+
 ## Part 1: Skeletonisation
 - Please find detailed explanations for every additional method and its parameters in green text above its declaration in Fingerprint.java 
 - basic tests have been added in Main.java
